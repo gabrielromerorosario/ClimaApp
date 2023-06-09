@@ -19,6 +19,14 @@ class Busqueda {
         }
     }
 
+    get paramsweather(){
+        return {
+            appid : process.env.weather_key,
+            units : `metric`,
+            lang: `es`
+        }
+    }
+
     async ciudad(lugar = ``){
         try {
             const instance = axios.create({
@@ -39,6 +47,32 @@ class Busqueda {
         } catch (error) {
             return [];
         }
+    }
+
+    async clima(lat,log){
+        try {
+            
+            const instance = axios.create({
+                baseURL: `https://api.openweathermap.org/data/2.5/weather`,
+                params : { ...this.paramsweather, lat , log }
+                
+            })
+
+            const rep = await instance.get();
+
+            console.log(rep);
+            
+            return{
+                desc: ``,
+                min: ``,
+                max: ``,
+                temp: ``
+            }
+            
+        } catch (error) {
+            return [];
+        }
+
     }
 
 }
