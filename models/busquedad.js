@@ -2,7 +2,7 @@ const axios = require('axios');
 
 
 class Busqueda {
-    historial = [];
+    historial = [`Santo Domingo`,`spain`];
 
     constructor(){
 
@@ -19,7 +19,7 @@ class Busqueda {
         }
     }
 
-    get paramsweather(){
+    get paramsopenweather(){
         return {
             appid : process.env.weather_key,
             units : `metric`,
@@ -45,34 +45,41 @@ class Busqueda {
             }));
             
         } catch (error) {
-            return [];
+            console.log(error)
         }
     }
 
-    async clima(lat,log){
+    async clima(lat,lon){
         try {
             
             const instance = axios.create({
                 baseURL: `https://api.openweathermap.org/data/2.5/weather`,
-                params : { ...this.paramsweather, lat , log }
+                params : {...this.paramsopenweather,lat,lon}
                 
-            })
+            });
 
             const rep = await instance.get();
 
-            console.log(rep);
+            const {weather , main} = rep.data;
             
             return{
-                desc: ``,
-                min: ``,
-                max: ``,
-                temp: ``
-            }
+                desc: weather[0].description,
+                min: main.temp_min,
+                max: main.temp_max,
+                temp: main.temp,
+            };
             
         } catch (error) {
-            return [];
+            console.log(error)
         }
 
+    }
+
+    agregarHistorial(lugal = ``){
+        if(this.historial.includes(lugal.toLocaleLowerCase())){
+            return;
+        }
+        this.historial.unshift(lugal.toLocaleLowerCase());
     }
 
 }
